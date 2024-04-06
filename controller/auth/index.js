@@ -90,7 +90,7 @@ const login = async (req, res) => {
                 userId: userInfo.userInfo,
                 name: userInfo.name
             }, process.env.ACCESS_SECRET_KEY, {
-                expiresIn: '10s', //유효기간
+                expiresIn: '30m', //유효기간
                 issuer: 'Book Storage'
             });
 
@@ -174,7 +174,7 @@ const refreshToken = async (req, res) => {
                 userId: userData.userId,
                 name: userData.name
             }, process.env.ACCESS_SECRET_KEY, {
-                expiresIn: '1m', //유효기간
+                expiresIn: '30m', //유효기간
                 issuer: 'Book Storage'
             });
 
