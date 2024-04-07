@@ -24,7 +24,6 @@ const upload = multer({
     }),
     // limits: { fileSize: 5 * 1024 * 1024 } // 파일 크기 제한
 });
-
 router.post('/img', upload.single('image'), imgUpload);
 
 module.exports = router;

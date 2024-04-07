@@ -16,11 +16,12 @@ const signup = async (req,res) => {
         }
 
         //중복 아이디 체크
-        const userIDExist = await prisma.user.findFirst({
+        const userIDExist = await prisma.user.findMany({
             where: {userId: userId}
         });
-        if(userIDExist){
-            return res.status.json({
+        if(userIDExist.length > 0){
+            console.log(userIDExist);
+            return res.status(500).json({
                 'code' : 1002,
                 'msg' : '이미 사용중인 아이디 입니다.'
             });
@@ -35,6 +36,7 @@ const signup = async (req,res) => {
             where: {email: email}
         });
         if(userEmailExist){
+            console.log(userEmailExist);
             return res.status(403).json({
                 'code': 403,
                 'msg' : '이미 사용중인 이메일 입니다.'
@@ -52,7 +54,7 @@ const signup = async (req,res) => {
                 name: name,
                 birth: birth,
                 sex: userSex,
-                email: email
+                email: email,
             }
         });
 
@@ -72,6 +74,7 @@ const login = async (req, res) => {
     const {userId, password} = req.body;
     //todo: try catch 어디서부터 어디까지 감싸는게 더 좋을지?
     try {
+        console.log(userId);
         const userInfo = await prisma.user.findFirst({
             where: {
                 userId: userId,
@@ -133,6 +136,12 @@ const accessToken = async (req,res) => {
     try {
         const token = req.cookies.accessToken;
         const data = jwt.verify(token, process.env.ACCESS_SECRET_KEY);
+        if (data == null) {
+            return res.status(401).json({
+                'code': 401,
+                'msg': 'tokenError'
+            });
+        }
         const userData = await prisma.user.findUnique({
             where: {
                 id: data.id,
@@ -200,8 +209,14 @@ const isValidToken = async (req, res, next) => {
     try {
         const token = req.cookies.accessToken;
         const data = jwt.verify(token, process.env.ACCESS_SECRET_KEY);
-        console.log("isValid middleware");
-        next();
+        if (data == null) {
+            return res.status(401).json({
+                'code': 401,
+                'msg': 'tokenError'
+            });
+        }else{
+            next();
+        }
     }catch (error){
         res.status(500).json({
             'code' : 500,
@@ -209,11 +224,17 @@ const isValidToken = async (req, res, next) => {
         });
     }
 }
+
 const loginSuccess = async (req, res) => {
     try {
         const token = req.cookies.accessToken;
         const data = jwt.verify(token, process.env.ACCESS_SECRET_KEY);
-        console.log("login success api");
+        if (data == null) {
+            return res.status(401).json({
+                'code': 401,
+                'msg': 'tokenError'
+            });
+        }
 
         const userData = await prisma.user.findUnique({
             where: {

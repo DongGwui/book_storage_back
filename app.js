@@ -8,6 +8,7 @@ const cors = require("cors");
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const uploadRouter = require('./routes/upload');
+const bookRouter = require('./routes/book');
 
 const app = express();
 
@@ -28,8 +29,8 @@ app.use(cors({
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
-app.use('/upload/img',express.static('public'));
 app.use('/upload',uploadRouter);
+app.use('/book',bookRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

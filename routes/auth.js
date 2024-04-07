@@ -23,11 +23,11 @@ router.get('/', function(req, res, next) {
 
 router.post('/signup', signup);
 router.post('/login',login);
-router.get('/accesstoken',accessToken);
+router.post('/accesstoken',accessToken);
 
 router.get('/login/success',isValidToken,loginSuccess);
 
-router.get('/refreshtoken',refreshToken);
+router.post('/refreshtoken',refreshToken);
 // router.get('/login/success',loginSuccess);
 router.post('/logout',logout);
 

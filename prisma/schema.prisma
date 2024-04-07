@@ -23,6 +23,8 @@ model User {
   // phone       String      @unique
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+  books       Book[]
+  userBooks   UsersBook[]
 }
 
 model Book {
@@ -30,16 +32,23 @@ model Book {
   title       String?
   subject     String?
   coverUrl    String?
-  content     String?
+  content     String         @db.Text
   isComplete  Boolean
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+  users       User[]
+  userBooks   UsersBook[]
 }
 
-model UsersBook{
-  id          Int            @id @default(autoincrement())
+model UsersBook {
+  id          Int          @id @default(autoincrement())
+  user        User         @relation(fields: [userId], references: [id])
   userId      Int
+  book        Book         @relation(fields: [bookId], references: [id])
   bookId      Int
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([bookId])
 }
